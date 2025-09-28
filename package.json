@@ -11,6 +11,7 @@
     "name": "Feras Abdalrahman",
     "url": "https://marketplace.visualstudio.com/publishers/doonfrs"
   },
+  "publisher": "doonfrs",
   "license": "MIT",
   "repository": {
     "type": "git",
