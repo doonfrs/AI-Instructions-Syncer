@@ -2,7 +2,7 @@
   "name": "ai-instructions-syncer",
   "displayName": "AI Instructions Syncer",
   "description": "Automatically sync AI coding instructions and rules across multiple AI assistants (Claude, Cursor, GitHub Copilot, Windsurf, and more)",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "icon": "assets/icon.png",
   "engines": {
     "vscode": "^1.74.0"
