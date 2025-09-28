@@ -1,10 +1,20 @@
 {
   "name": "ai-rules-syncer",
   "displayName": "AI Rules Syncer",
-  "description": "VS Code extension for syncing AI rules",
+  "description": "Automatically sync AI coding rules and instructions across multiple AI assistants (Claude, Cursor, GitHub Copilot, Windsurf, and more)",
   "version": "0.0.1",
+  "icon": "assets/icon.jpg",
   "engines": {
     "vscode": "^1.74.0"
+  },
+  "author": {
+    "name": "Feras Abdalrahman",
+    "url": "https://marketplace.visualstudio.com/publishers/doonfrs"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/doonfrs/ai-rules-syncer.git"
   },
   "categories": [
     "Other"

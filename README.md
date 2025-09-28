@@ -2,7 +2,7 @@
 
 ![Demo](assets/demo.gif)
 
-A VS Code extension that automatically syncs your AI assistant rules to multiple files when you save your main rules file. Perfect for developers who use multiple AI assistants (Claude, Cursor, Copilot) and want to keep their rules synchronized across different tools and projects.
+A VS Code extension that automatically syncs your AI assistant rules to multiple files when you save your main rules file. Perfect for developers who use multiple AI assistants (Claude, Cursor, GitHub Copilot, Windsurf) and want to keep their rules synchronized across different tools and projects.
 
 **⭐ If this extension saves you time and makes your workflow smoother, please consider starring the repository! Your support means the world to us and helps the project grow. ⭐**
 
@@ -19,8 +19,10 @@ If this extension helps you, consider supporting the development:
 - **Zero Configuration Required** - Works out of the box with sensible defaults
 - **Cross-Platform Support** - Windows, macOS, Linux, and WSL/WSL2 compatible
 - **Smart File Watching** - Automatically detects when your AI rules file is saved
-- **Multi-Target Sync** - Sync to multiple files with different names (CLAUDE.md, cursor.md, etc.)
-- **Folder Path Support** - Create files in nested directories (`.cursor/rules.md`, `settings/.cursors/rules.md`)
+- **Multi-Target Sync** - Sync to multiple files with different names (CLAUDE.md, .cursorrules, etc.)
+- **Auto & Manual Sync** - Automatic syncing on save (default) with option to disable and sync manually
+- **Verified AI Tool Support** - Pre-configured paths for Claude, Cursor, GitHub Copilot, Windsurf, and more
+- **Folder Path Support** - Create files in nested directories (`.windsurf/rules/rules.md`, `.github/copilot-instructions.md`)
 - **Automatic Directory Creation** - Creates folder structure automatically if it doesn't exist
 - **Project-Based Configuration** - Config file travels with your project, no global settings
 - **Comment Support** - YAML config with comments to easily enable/disable target files
@@ -48,7 +50,7 @@ If you find this extension useful:
 ### Multi-AI Assistant Workflow
 Perfect for developers using multiple AI assistants:
 1. Create your main AI rules in `ai-rules.md`
-2. Extension automatically syncs to `CLAUDE.md`, `cursor.md`, etc.
+2. Extension automatically syncs to `CLAUDE.md`, `.cursorrules`, `.github/copilot-instructions.md`, etc.
 3. Each AI tool reads its specific rules file
 4. Maintain consistency across all your AI interactions
 
@@ -89,10 +91,11 @@ Perfect for developers using multiple AI assistants:
 4. Edit your AI rules in `ai-rules.md`
 5. Save the file - your rules are automatically synced to target files!
 
-### Command Palette
-- Open Command Palette (`Ctrl+Shift+P`)
-- Type "Generate AI Rules File"
-- Execute the command to set up your project
+### Available Commands
+Open Command Palette (`Ctrl+Shift+P`) and use these commands:
+
+- **"AI Rules Syncer: Generate AI Rules File"** - Create template files and configuration
+- **"AI Rules Syncer: Sync AI Rules Now"** - Manually sync rules to all target files
 
 ### Automatic Syncing
 Once set up, the extension works automatically:
@@ -100,37 +103,10 @@ Once set up, the extension works automatically:
 - Save the file (`Ctrl+S`)
 - Extension syncs content to all target files defined in your config
 
-
-## 📁 File Organization
-
-After running the "Generate AI Rules File" command, your project will have:
-
-```text
-your-project/
-├── ai-rules.md                 # Your main AI rules file
-├── ai-rules.config.yaml        # Configuration file
-├── CLAUDE.md                   # Synced copy for Claude
-├── cursor.md                   # Synced copy for Cursor
-└── .cursor/
-    └── rules.md                # Synced copy in .cursor folder
-```
-
-### Configuration Structure
-
-The `ai-rules.config.yaml` file controls the syncing behavior:
-
-```yaml
-# AI Rules Syncer Configuration
-sourceFile: ai-rules.md
-
-# Target files to sync to (supports folder paths)
-targetFiles:
-  - CLAUDE.md                    # Root directory file
-  - cursor.md                    # Root directory file
-  - .cursor/rules.md             # File in .cursor folder
-  # - settings/.cursors/rules.md # Commented out (disabled)
-```
-
+### Manual Syncing
+You can also sync manually or disable auto-sync:
+- Use "AI Rules Syncer: Sync AI Rules Now" command
+- Set `autoSync: false` in config to disable automatic syncing
 
 ## ⚙️ Configuration
 
@@ -141,7 +117,8 @@ The extension uses a project-local YAML configuration file that supports comment
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
 | `sourceFile` | string | `ai-rules.md` | The main AI rules file that triggers syncing when saved |
-| `targetFiles` | array | `[CLAUDE.md, cursor.md, .cursor/rules.md]` | List of files to sync to (supports folder paths) |
+| `targetFiles` | array | `[CLAUDE.md, .cursorrules]` | List of files to sync to (supports folder paths) |
+| `autoSync` | boolean | `true` | Enable automatic syncing on save (set to false for manual sync only) |
 
 ### Editing Configuration
 
@@ -155,10 +132,11 @@ The extension supports creating files in nested directories:
 
 ```yaml
 targetFiles:
-  - CLAUDE.md                      # Root directory
-  - .cursor/rules.md               # Single folder
-  - settings/.cursors/rules.md     # Nested folders
-  - docs/ai-guidelines.md          # Any folder structure
+  - CLAUDE.md                             # Claude Code
+  - .cursorrules                          # Cursor IDE (legacy but still supported)
+  - .github/copilot-instructions.md       # GitHub Copilot repository-wide instructions
+  - .windsurf/rules/rules.md              # Windsurf rules directory
+  - docs/ai-guidelines.md                 # Any custom folder structure
 ```
 
 Folders are created automatically if they don't exist.
@@ -169,10 +147,10 @@ Enable/disable target files by commenting them out:
 
 ```yaml
 targetFiles:
-  - CLAUDE.md                      # Active
-  - cursor.md                      # Active
-  # - copilot.md                   # Disabled (commented out)
-  - .cursor/rules.md               # Active
+  - CLAUDE.md                             # Active - Claude Code
+  - .cursorrules                          # Active - Cursor IDE
+  # - .github/copilot-instructions.md     # Disabled (commented out)
+  - .windsurf/rules/rules.md              # Active - Windsurf IDE
 ```
 
 ### Custom Source File
@@ -183,7 +161,8 @@ Change the source file that triggers syncing:
 sourceFile: my-custom-rules.md     # Instead of ai-rules.md
 targetFiles:
   - CLAUDE.md
-  - cursor.md
+  - .cursorrules
+autoSync: true                     # Enable automatic syncing (default)
 ```
 
 ## 🤝 Contributing
@@ -212,12 +191,6 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 - Real-time sync notifications
 
 
-## 🐛 Known Issues
-
-- Large files may take a moment to sync to multiple targets
-- YAML parsing is basic - complex YAML features not supported
-- Configuration changes require saving the rules file to take effect
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -229,4 +202,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - 🐙 **GitHub**: [@doonfrs](https://github.com/doonfrs)
 - ☕ **Support**: [Buy me a coffee](https://buymeacoffee.com/doonfrs)
 
-**Made with ❤️ for developers using multiple AI assistants**
+Made with ❤️ for developers using multiple AI assistants
