@@ -10,11 +10,11 @@ sourceFile: ai-rules.md
 # Uncomment or add the files you want to sync to
 
 targetFiles:
-  # - CLAUDE.md                             # Claude Code
-  # - .cursor/rules/rules.md                # Cursor rules file
-  # - .github/copilot-instructions.md       # GitHub Copilot repository-wide instructions
-  # - .windsurf/rules/rules.md              # Windsurf rules directory (recommended)
-  # - CODEX.md                              # Codex rules file
+  #- CLAUDE.md                             # Claude Code
+  #- .cursor/rules/rules.md                # Cursor rules file
+  #- .github/copilot-instructions.md       # GitHub Copilot repository-wide instructions
+  #- .windsurf/rules/rules.md              # Windsurf rules directory (recommended)
+  #- CODEX.md                              # Codex rules file
 
 
 # Enable automatic syncing on save
