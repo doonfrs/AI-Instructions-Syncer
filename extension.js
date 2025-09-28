@@ -24,7 +24,15 @@ function activate(context) {
                     if (cleanValue.startsWith('[') && cleanValue.endsWith(']')) {
                         config[cleanKey] = cleanValue.slice(1, -1)
                             .split(',')
-                            .map(f => f.trim().replace(/['"]/g, ''))
+                            .map(f => {
+                                let item = f.trim().replace(/['"]/g, '');
+                                // Strip inline comments
+                                const commentIndex = item.indexOf('#');
+                                if (commentIndex !== -1) {
+                                    item = item.substring(0, commentIndex).trim();
+                                }
+                                return item;
+                            })
                             .filter(f => f.length > 0);
                     }
                 } else {
@@ -33,7 +41,12 @@ function activate(context) {
             } else if (trimmed.startsWith('- ')) {
                 // YAML array item
                 if (!config.targetFiles) config.targetFiles = [];
-                const item = trimmed.slice(2).trim().replace(/['"]/g, '');
+                let item = trimmed.slice(2).trim().replace(/['"]/g, '');
+                // Strip inline comments
+                const commentIndex = item.indexOf('#');
+                if (commentIndex !== -1) {
+                    item = item.substring(0, commentIndex).trim();
+                }
                 if (item) config.targetFiles.push(item);
             }
         }
@@ -46,8 +59,8 @@ function activate(context) {
         const configPath = path.join(workspacePath, 'ai-rules.config.yaml');
         const defaultConfig = {
             sourceFile: 'ai-rules.md',
-            targetFiles: ['CLAUDE.md', '.cursorrules'],
-            autoSync: true  // Auto sync is enabled by default
+            targetFiles: [],  // No default target files - must be configured in YAML
+            autoSync: true    // Auto sync is enabled by default
         };
 
         try {
@@ -75,10 +88,10 @@ sourceFile: ai-rules.md
 # Target files to sync to (supports both files and folder paths)
 # Folders will be created automatically if they don't exist
 targetFiles:
-  - CLAUDE.md                           # Claude Code (Anthropic) - main rules file
-  - .cursorrules                        # Cursor IDE - legacy but still supported
+  # - CLAUDE.md                         # Claude Code (Anthropic) - main rules file
+  # - .cursorrules                      # Cursor IDE - legacy but still supported
   # - .github/copilot-instructions.md  # GitHub Copilot - repository-wide instructions
-  # - .windsurfrules                   # Windsurf IDE - project rules
+  # - .windsurf/rules/rules.md         # Windsurf IDE - project rules
 
 # Additional configuration options
 autoSync: true                          # Enable automatic syncing on save (default: true)
@@ -182,6 +195,12 @@ autoSync: true                          # Enable automatic syncing on save (defa
         const config = readConfig(workspacePath);
         const targetFiles = config.targetFiles || [];
 
+        // Do nothing if no target files are configured
+        if (targetFiles.length === 0) {
+            console.log('No target files configured in ai-rules.config.yaml');
+            return;
+        }
+
         try {
             const content = fs.readFileSync(sourceFilePath, 'utf8');
 
@@ -246,10 +265,17 @@ autoSync: true                          # Enable automatic syncing on save (defa
 
         const sourceFile = config.sourceFile || 'ai-rules.md';
         const sourceFilePath = path.join(workspacePath, sourceFile);
+        const configFilePath = path.join(workspacePath, 'ai-rules.config.yaml');
 
-        // Check if the saved file is our source file
+        // Check if the saved file is our source file or config file
         if (document.uri.fsPath === sourceFilePath) {
             syncFiles(sourceFilePath);
+        } else if (document.uri.fsPath === configFilePath) {
+            // Config file was saved, sync using current source file if it exists
+            if (fs.existsSync(sourceFilePath)) {
+                console.log('Config file changed, re-syncing...');
+                syncFiles(sourceFilePath);
+            }
         }
     });
 
