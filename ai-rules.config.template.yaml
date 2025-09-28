@@ -1,5 +1,5 @@
-# AI Rules Syncer Configuration Template
-# This file controls which files get synced when you save your AI rules
+# AI Instructions Syncer Configuration Template
+# This file controls which files get synced when you save your AI instructions
 
 # Source file that triggers the sync (default: ai-rules.md)
 # This is the file you edit that will be synced to all target files

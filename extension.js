@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 function activate(context) {
-    console.log('AI Rules Syncer extension is now active');
+    console.log('AI Instructions Syncer extension is now active');
 
     // Function to parse simple YAML-like config
     const parseSimpleYaml = (content) => {
@@ -79,7 +79,7 @@ function activate(context) {
     // Function to create default config file
     const createConfigFile = (workspacePath) => {
         const configPath = path.join(workspacePath, 'ai-rules.config.yaml');
-        let defaultConfigContent = `# AI Rules Syncer Configuration
+        let defaultConfigContent = `# AI Instructions Syncer Configuration
 # This file controls which files get synced when you save your AI rules
 
 # Source file that triggers the sync (default: ai-rules.md)
@@ -117,7 +117,7 @@ autoSync: true                          # Enable automatic syncing on save (defa
     };
 
     // Register command to generate AI rules file
-    const generateRulesCommand = vscode.commands.registerCommand('aiRulesSyncer.generateRulesFile', async () => {
+    const generateInstructionsCommand = vscode.commands.registerCommand('aiInstructionsSyncer.generateInstructionsFile', async () => {
         const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
         if (!workspaceFolder) {
             vscode.window.showErrorMessage('No workspace folder found');
@@ -230,7 +230,7 @@ autoSync: true                          # Enable automatic syncing on save (defa
     };
 
     // Register command to manually sync files
-    const syncCommand = vscode.commands.registerCommand('aiRulesSyncer.syncFiles', () => {
+    const syncCommand = vscode.commands.registerCommand('aiInstructionsSyncer.syncFiles', () => {
         const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
         if (!workspaceFolder) {
             vscode.window.showErrorMessage('No workspace folder found');
@@ -243,7 +243,7 @@ autoSync: true                          # Enable automatic syncing on save (defa
         const sourceFilePath = path.join(workspacePath, sourceFile);
 
         if (!fs.existsSync(sourceFilePath)) {
-            vscode.window.showErrorMessage(`Source file ${sourceFile} not found. Run 'Generate AI Rules File' first.`);
+            vscode.window.showErrorMessage(`Source file ${sourceFile} not found. Run 'Generate AI Instructions File' first.`);
             return;
         }
 
@@ -279,7 +279,7 @@ autoSync: true                          # Enable automatic syncing on save (defa
         }
     });
 
-    context.subscriptions.push(generateRulesCommand, syncCommand, saveWatcher);
+    context.subscriptions.push(generateInstructionsCommand, syncCommand, saveWatcher);
 }
 
 function deactivate() {}

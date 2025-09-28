@@ -1,7 +1,7 @@
 {
-  "name": "ai-rules-syncer",
-  "displayName": "AI Rules Syncer",
-  "description": "Automatically sync AI coding rules and instructions across multiple AI assistants (Claude, Cursor, GitHub Copilot, Windsurf, and more)",
+  "name": "ai-instructions-syncer",
+  "displayName": "AI Instructions Syncer",
+  "description": "Automatically sync AI coding instructions and rules across multiple AI assistants (Claude, Cursor, GitHub Copilot, Windsurf, and more)",
   "version": "0.0.1",
   "icon": "assets/icon.png",
   "engines": {
@@ -15,7 +15,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/doonfrs/ai-rules-syncer.git"
+    "url": "git@github.com:doonfrs/AI-Instructions-Syncer.git"
   },
   "categories": [
     "Other"
@@ -27,14 +27,14 @@
   "contributes": {
     "commands": [
       {
-        "command": "aiRulesSyncer.generateRulesFile",
-        "title": "Generate AI Rules File",
-        "category": "AI Rules Syncer"
+        "command": "aiInstructionsSyncer.generateInstructionsFile",
+        "title": "Generate AI Instructions File",
+        "category": "AI Instructions Syncer"
       },
       {
-        "command": "aiRulesSyncer.syncFiles",
-        "title": "Sync AI Rules Now",
-        "category": "AI Rules Syncer"
+        "command": "aiInstructionsSyncer.syncFiles",
+        "title": "Sync AI Instructions Now",
+        "category": "AI Instructions Syncer"
       }
     ]
   },

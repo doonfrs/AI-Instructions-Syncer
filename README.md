@@ -1,8 +1,8 @@
-# AI Rules Syncer
+# AI Instructions Syncer
 
 ![Demo](assets/demo.gif)
 
-A VS Code extension that automatically syncs your AI assistant rules to multiple files when you save your main rules file. Perfect for developers who use multiple AI assistants (Claude, Cursor, GitHub Copilot, Windsurf) and want to keep their rules synchronized across different tools and projects.
+A VS Code extension that automatically syncs your AI assistant instructions to multiple files when you save your main instructions file. Perfect for developers who use multiple AI assistants (Claude, Cursor, GitHub Copilot, Windsurf) and want to keep their instructions synchronized across different tools and projects.
 
 **⭐ If this extension saves you time and makes your workflow smoother, please consider starring the repository! Your support means the world to us and helps the project grow. ⭐**
 
@@ -18,7 +18,7 @@ If this extension helps you, consider supporting the development:
 
 - **Zero Configuration Required** - Works out of the box with sensible defaults
 - **Cross-Platform Support** - Windows, macOS, Linux, and WSL/WSL2 compatible
-- **Smart File Watching** - Automatically detects when your AI rules file is saved
+- **Smart File Watching** - Automatically detects when your AI instructions file is saved
 - **Multi-Target Sync** - Sync to multiple files with different names (CLAUDE.md, .cursorrules, etc.)
 - **Auto & Manual Sync** - Automatic syncing on save (default) with option to disable and sync manually
 - **Verified AI Tool Support** - Pre-configured paths for Claude, Cursor, GitHub Copilot, Windsurf, and more
@@ -55,13 +55,13 @@ Perfect for developers using multiple AI assistants:
 4. Maintain consistency across all your AI interactions
 
 ### Team Collaboration
-- Share standardized AI rules across team members
+- Share standardized AI instructions across team members
 - Commit configuration to version control
 - Ensure everyone uses the same AI interaction guidelines
 - Easy onboarding for new team members
 
 ### Project-Specific Rules
-- Different rules for different types of projects
+- Different instructions for different types of projects
 - Frontend vs backend specific guidelines
 - Framework-specific AI instructions
 - Custom coding standards per project
@@ -72,7 +72,7 @@ Perfect for developers using multiple AI assistants:
 ### From VS Code Marketplace
 1. Open VS Code
 2. Go to Extensions (`Ctrl+Shift+X`)
-3. Search for "AI Rules Syncer"
+3. Search for "AI Instructions Syncer"
 4. Click "Install"
 
 ### From VSIX
@@ -86,7 +86,7 @@ Perfect for developers using multiple AI assistants:
 
 ### Quick Start
 1. Open Command Palette (`Ctrl+Shift+P`)
-2. Type "AI Rules Syncer: Generate AI Rules File"
+2. Type "AI Instructions Syncer: Generate AI Instructions File"
 3. Execute the command to create `ai-rules.md` and `ai-rules.config.yaml`
 4. Edit your AI rules in `ai-rules.md`
 5. Save the file - your rules are automatically synced to target files!
@@ -94,8 +94,8 @@ Perfect for developers using multiple AI assistants:
 ### Available Commands
 Open Command Palette (`Ctrl+Shift+P`) and use these commands:
 
-- **"AI Rules Syncer: Generate AI Rules File"** - Create template files and configuration
-- **"AI Rules Syncer: Sync AI Rules Now"** - Manually sync rules to all target files
+- **"AI Instructions Syncer: Generate AI Instructions File"** - Create template files and configuration
+- **"AI Instructions Syncer: Sync AI Instructions Now"** - Manually sync instructions to all target files
 
 ### Automatic Syncing
 Once set up, the extension works automatically:
@@ -105,7 +105,7 @@ Once set up, the extension works automatically:
 
 ### Manual Syncing
 You can also sync manually or disable auto-sync:
-- Use "AI Rules Syncer: Sync AI Rules Now" command
+- Use "AI Instructions Syncer: Sync AI Instructions Now" command
 - Set `autoSync: false` in config to disable automatic syncing
 
 ## ⚙️ Configuration
@@ -186,7 +186,7 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 - Folder path support with automatic directory creation
 - Multi-target file synchronization
 - Cross-platform compatibility (Windows, macOS, Linux, WSL/WSL2)
-- One-click setup with AI rules template generation
+- One-click setup with AI instructions template generation
 - Git-friendly configuration files
 - Real-time sync notifications
 
