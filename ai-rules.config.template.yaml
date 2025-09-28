@@ -11,7 +11,7 @@ sourceFile: ai-rules.md
 
 targetFiles:
   #- CLAUDE.md                             # Claude Code
-  #- .cursor/rules/rules.md                # Cursor rules file
+  - .cursor/rules/rules.mdc               # Cursor rules file
   #- .github/copilot-instructions.md       # GitHub Copilot repository-wide instructions
   #- .windsurf/rules/rules.md              # Windsurf rules directory (recommended)
   #- CODEX.md                              # Codex rules file
@@ -19,3 +19,7 @@ targetFiles:
 
 # Enable automatic syncing on save
 autoSync: true
+
+# Default value for alwaysApply in Cursor MDC files (true/false)
+# This will be added to .mdc files if they don't already have YAML frontmatter
+cursorMdcAlwaysApply: true

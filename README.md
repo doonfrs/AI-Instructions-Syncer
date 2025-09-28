@@ -22,6 +22,7 @@ If this extension helps you, consider supporting the development:
 - **Multi-Target Sync** - Sync to multiple files with different names (CLAUDE.md, .cursorrules, etc.)
 - **Auto & Manual Sync** - Automatic syncing on save (default) with option to disable and sync manually
 - **Verified AI Tool Support** - Pre-configured paths for Claude, Cursor, GitHub Copilot, Windsurf, and more
+- **Cursor MDC Format Support** - Intelligent handling of Cursor `.mdc` files with YAML frontmatter preservation
 - **Folder Path Support** - Create files in nested directories (`.windsurf/rules/rules.md`, `.github/copilot-instructions.md`)
 - **Automatic Directory Creation** - Creates folder structure automatically if it doesn't exist
 - **Project-Based Configuration** - Config file travels with your project, no global settings
@@ -119,6 +120,7 @@ The extension uses a project-local YAML configuration file that supports comment
 | `sourceFile` | string | `ai-rules.md` | The main AI rules file that triggers syncing when saved |
 | `targetFiles` | array | `[CLAUDE.md, .cursorrules]` | List of files to sync to (supports folder paths) |
 | `autoSync` | boolean | `true` | Enable automatic syncing on save (set to false for manual sync only) |
+| `cursorMdcAlwaysApply` | boolean | `true` | Default value for `alwaysApply` in Cursor MDC files (only used when creating new frontmatter) |
 
 ### Editing Configuration
 
@@ -134,6 +136,7 @@ The extension supports creating files in nested directories:
 targetFiles:
   - CLAUDE.md                             # Claude Code
   - .cursorrules                          # Cursor IDE (legacy but still supported)
+  - .cursor/rules/rules.mdc               # Cursor MDC format with frontmatter support
   - .github/copilot-instructions.md       # GitHub Copilot repository-wide instructions
   - .windsurf/rules/rules.md              # Windsurf rules directory
   - docs/ai-guidelines.md                 # Any custom folder structure
@@ -164,6 +167,15 @@ targetFiles:
   - .cursorrules
 autoSync: true                     # Enable automatic syncing (default)
 ```
+
+### Cursor MDC File Support
+
+The extension provides intelligent handling for Cursor MDC files (`.cursor/rules/rules.mdc`) with YAML frontmatter preservation:
+
+#### Features:
+- **Frontmatter Preservation**: Existing YAML frontmatter in `.mdc` files is completely preserved
+- **Smart alwaysApply Handling**: Automatically adds `alwaysApply` to frontmatter only when missing
+- **Configurable Default**: Set the default `alwaysApply` value via `cursorMdcAlwaysApply` setting
 
 ## 🤝 Contributing
 

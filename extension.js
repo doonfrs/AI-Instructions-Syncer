@@ -54,13 +54,82 @@ function activate(context) {
         return config;
     };
 
+    // Function to parse frontmatter and check for alwaysApply
+    const parseFrontmatter = (content) => {
+        const lines = content.split('\n');
+        if (lines.length < 3) return { hasFrontmatter: false, hasAlwaysApply: false };
+
+        // Check if first line starts with ---
+        if (!lines[0].trim().startsWith('---')) {
+            return { hasFrontmatter: false, hasAlwaysApply: false };
+        }
+
+        // Find the closing --- (should be within first few lines)
+        let closingIndex = -1;
+        for (let i = 1; i < Math.min(lines.length, 10); i++) {
+            if (lines[i].trim() === '---') {
+                closingIndex = i;
+                break;
+            }
+        }
+
+        if (closingIndex === -1) {
+            return { hasFrontmatter: false, hasAlwaysApply: false };
+        }
+
+        // Extract frontmatter content
+        const frontmatterLines = lines.slice(1, closingIndex);
+        const bodyLines = lines.slice(closingIndex + 1);
+
+        // Check if alwaysApply exists in the frontmatter
+        let hasAlwaysApply = false;
+        for (const line of frontmatterLines) {
+            if (line.trim().startsWith('alwaysApply:')) {
+                hasAlwaysApply = true;
+                break;
+            }
+        }
+
+        return {
+            hasFrontmatter: true,
+            hasAlwaysApply: hasAlwaysApply,
+            frontmatterLines: frontmatterLines,
+            bodyLines: bodyLines
+        };
+    };
+
+    // Function to add or update frontmatter with alwaysApply
+    const ensureAlwaysApplyFrontmatter = (content, alwaysApplyValue = true) => {
+        const parsed = parseFrontmatter(content);
+
+        if (!parsed.hasFrontmatter) {
+            // No frontmatter exists, add new one
+            const frontmatter = `---\nalwaysApply: ${alwaysApplyValue}\n---\n\n`;
+            return frontmatter + content;
+        } else if (!parsed.hasAlwaysApply) {
+            // Frontmatter exists but no alwaysApply, add it
+            const frontmatterLines = [...parsed.frontmatterLines, `alwaysApply: ${alwaysApplyValue}`];
+            const newContent = [
+                '---',
+                ...frontmatterLines,
+                '---',
+                ...parsed.bodyLines
+            ].join('\n');
+            return newContent;
+        } else {
+            // Both frontmatter and alwaysApply exist, don't touch it
+            return content;
+        }
+    };
+
     // Function to read config file
     const readConfig = (workspacePath) => {
         const configPath = path.join(workspacePath, 'ai-rules.config.yaml');
         const defaultConfig = {
             sourceFile: 'ai-rules.md',
             targetFiles: [],  // No default target files - must be configured in YAML
-            autoSync: true    // Auto sync is enabled by default
+            autoSync: true,   // Auto sync is enabled by default
+            cursorMdcAlwaysApply: true  // Default value for alwaysApply in Cursor MDC files
         };
 
         try {
@@ -214,7 +283,56 @@ autoSync: true                          # Enable automatic syncing on save (defa
                         console.log(`Created directory: ${path.relative(workspacePath, targetDir)}`);
                     }
 
-                    fs.writeFileSync(targetPath, content);
+                    let finalContent = content;
+
+                    // Special handling for .mdc files (Cursor MDC format)
+                    if (targetFile.endsWith('.mdc')) {
+                        // For .mdc files, we need to preserve existing frontmatter in the target file
+                        // but ensure alwaysApply exists. If target file doesn't exist, add frontmatter to source content.
+                        let targetExistingContent = '';
+                        let targetHasContent = false;
+
+                        try {
+                            if (fs.existsSync(targetPath)) {
+                                targetExistingContent = fs.readFileSync(targetPath, 'utf8');
+                                targetHasContent = true;
+                            }
+                        } catch (error) {
+                            // Target file doesn't exist or can't be read, proceed with source content
+                        }
+
+                        const alwaysApplyValue = config.cursorMdcAlwaysApply !== undefined ?
+                            config.cursorMdcAlwaysApply : true;
+
+                        if (targetHasContent) {
+                            // Target file exists, check if it has frontmatter we should preserve
+                            const targetParsed = parseFrontmatter(targetExistingContent);
+                            if (targetParsed.hasFrontmatter && targetParsed.hasAlwaysApply) {
+                                // Target has frontmatter with alwaysApply, just update the body content
+                                const sourceParsed = parseFrontmatter(content);
+                                const sourceBody = sourceParsed.hasFrontmatter ?
+                                    sourceParsed.bodyLines.join('\n') : content;
+
+                                finalContent = [
+                                    '---',
+                                    ...targetParsed.frontmatterLines,
+                                    '---',
+                                    sourceBody
+                                ].join('\n');
+                                console.log(`Preserved existing frontmatter in ${targetFile}`);
+                            } else {
+                                // Target exists but no proper frontmatter, treat like new file
+                                finalContent = ensureAlwaysApplyFrontmatter(content, alwaysApplyValue);
+                                console.log(`Added alwaysApply frontmatter to ${targetFile} (value: ${alwaysApplyValue})`);
+                            }
+                        } else {
+                            // Target file doesn't exist, create with frontmatter
+                            finalContent = ensureAlwaysApplyFrontmatter(content, alwaysApplyValue);
+                            console.log(`Created ${targetFile} with alwaysApply frontmatter (value: ${alwaysApplyValue})`);
+                        }
+                    }
+
+                    fs.writeFileSync(targetPath, finalContent);
                     console.log(`Synced to ${targetFile}`);
                 } catch (error) {
                     console.error(`Failed to sync to ${targetFile}:`, error.message);
