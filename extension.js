@@ -66,7 +66,7 @@ function activate(context) {
     // Function to create default config file
     const createConfigFile = (workspacePath) => {
         const configPath = path.join(workspacePath, 'ai-rules.config.yaml');
-        const defaultConfigContent = `# AI Rules Syncer Configuration
+        let defaultConfigContent = `# AI Rules Syncer Configuration
 # This file controls which files get synced when you save your AI rules
 
 # Source file that triggers the sync (default: ai-rules.md)
@@ -83,6 +83,16 @@ targetFiles:
 # Additional configuration options
 autoSync: true                          # Enable automatic syncing on save (default: true)
 `;
+
+        // Try to read template file, fallback to hardcoded template
+        const templatePath = path.join(__dirname, 'ai-rules.config.template.yaml');
+        try {
+            if (fs.existsSync(templatePath)) {
+                defaultConfigContent = fs.readFileSync(templatePath, 'utf8');
+            }
+        } catch (error) {
+            console.warn('Could not read ai-rules.config.template.yaml, using default template:', error.message);
+        }
 
         try {
             fs.writeFileSync(configPath, defaultConfigContent);
@@ -115,7 +125,7 @@ autoSync: true                          # Enable automatic syncing on save (defa
 
         // Create basic AI rules template if file doesn't exist
         if (!fs.existsSync(sourceFilePath)) {
-            const template = `# AI Rules
+            let template = `# AI Rules
 
 ## General Guidelines
 - Write clear and concise code
@@ -132,6 +142,16 @@ autoSync: true                          # Enable automatic syncing on save (defa
 - Update README when needed
 - Add inline comments for clarity
 `;
+
+            // Try to read template file, fallback to hardcoded template
+            const templatePath = path.join(__dirname, 'ai-rules.template.md');
+            try {
+                if (fs.existsSync(templatePath)) {
+                    template = fs.readFileSync(templatePath, 'utf8');
+                }
+            } catch (error) {
+                console.warn('Could not read ai-rules.template.md, using default template:', error.message);
+            }
 
             try {
                 fs.writeFileSync(sourceFilePath, template);
