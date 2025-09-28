@@ -46,7 +46,8 @@ function activate(context) {
         const configPath = path.join(workspacePath, 'ai-rules.config.yaml');
         const defaultConfig = {
             sourceFile: 'ai-rules.md',
-            targetFiles: ['CLAUDE.md', 'cursor.md']
+            targetFiles: ['CLAUDE.md', '.cursorrules'],
+            autoSync: true  // Auto sync is enabled by default
         };
 
         try {
@@ -74,12 +75,13 @@ sourceFile: ai-rules.md
 # Target files to sync to (supports both files and folder paths)
 # Folders will be created automatically if they don't exist
 targetFiles:
-  - CLAUDE.md                    # File in root directory
-  - cursor.md                    # File in root directory
-  - .cursor/rules.md             # File in .cursor folder
-  # - settings/.cursors/rules.md # File in nested folders
-  # - copilot.md                 # Commented out file
-  # - .github/ai-rules.md        # File in .github folder
+  - CLAUDE.md                           # Claude Code (Anthropic) - main rules file
+  - .cursorrules                        # Cursor IDE - legacy but still supported
+  # - .github/copilot-instructions.md  # GitHub Copilot - repository-wide instructions
+  # - .windsurfrules                   # Windsurf IDE - project rules
+
+# Additional configuration options
+autoSync: true                          # Enable automatic syncing on save (default: true)
 `;
 
         try {
@@ -188,6 +190,27 @@ targetFiles:
         }
     };
 
+    // Register command to manually sync files
+    const syncCommand = vscode.commands.registerCommand('aiRulesSyncer.syncFiles', () => {
+        const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+        if (!workspaceFolder) {
+            vscode.window.showErrorMessage('No workspace folder found');
+            return;
+        }
+
+        const workspacePath = workspaceFolder.uri.fsPath;
+        const config = readConfig(workspacePath);
+        const sourceFile = config.sourceFile || 'ai-rules.md';
+        const sourceFilePath = path.join(workspacePath, sourceFile);
+
+        if (!fs.existsSync(sourceFilePath)) {
+            vscode.window.showErrorMessage(`Source file ${sourceFile} not found. Run 'Generate AI Rules File' first.`);
+            return;
+        }
+
+        syncFiles(sourceFilePath);
+    });
+
     // Watch for file saves
     const saveWatcher = vscode.workspace.onDidSaveTextDocument((document) => {
         const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
@@ -195,6 +218,12 @@ targetFiles:
 
         const workspacePath = workspaceFolder.uri.fsPath;
         const config = readConfig(workspacePath);
+
+        // Check if autoSync is enabled (default is true)
+        if (config.autoSync === false) {
+            return;  // Don't auto-sync if disabled
+        }
+
         const sourceFile = config.sourceFile || 'ai-rules.md';
         const sourceFilePath = path.join(workspacePath, sourceFile);
 
@@ -204,7 +233,7 @@ targetFiles:
         }
     });
 
-    context.subscriptions.push(generateRulesCommand, saveWatcher);
+    context.subscriptions.push(generateRulesCommand, syncCommand, saveWatcher);
 }
 
 function deactivate() {}

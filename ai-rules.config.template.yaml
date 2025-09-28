@@ -1,0 +1,44 @@
+# AI Rules Syncer Configuration Template
+# This file controls which files get synced when you save your AI rules
+# Copy this file to 'ai-rules.config.yaml' and modify as needed
+
+# Source file that triggers the sync (default: ai-rules.md)
+# This is the file you edit that will be synced to all target files
+sourceFile: ai-rules.md
+
+# Target files to sync to (supports both files and folder paths)
+# Folders will be created automatically if they don't exist
+# Uncomment or add the files you want to sync to
+
+# === VERIFIED AND CONFIRMED FILE PATHS (2025) ===
+
+targetFiles:
+  # Claude Code (Anthropic) - VERIFIED
+  - CLAUDE.md                              # Claude Code main rules file in project root
+  # - CLAUDE.local.md                      # Claude Code local overrides (not committed to git)
+
+  # Cursor IDE - VERIFIED
+  - .cursorrules                           # Cursor legacy rules file (still supported)
+  # Note: Cursor's new system uses .cursor/rules/ directory with .mdc files
+
+  # GitHub Copilot - VERIFIED
+  # - .github/copilot-instructions.md      # GitHub Copilot repository-wide instructions
+  # - AGENTS.md                             # Copilot agent-specific instructions
+  # Note: Copilot also supports .github/instructions/ directory for path-specific rules
+
+  # Windsurf IDE (Codeium) - VERIFIED
+  # - .windsurfrules                       # Windsurf rules in project root
+  # Note: Windsurf also supports .windsurf/rules/ directory for modular rules
+
+  # === OTHER AI TOOLS ===
+
+  # Note: The following tools use JSON/YAML config files that cannot be synced with markdown content:
+  # - Aider: Uses .aider.conf.yml (YAML config file, not markdown rules)
+  # - Continue.dev: Uses .continuerc.json (JSON config file, not markdown rules)
+  # - Codeium: Uses .codeiumignore (gitignore format, not markdown rules)
+  # - .vscode/ai-rules.md                  # Generic VS Code AI rules (custom)
+  # - .ai/rules.md                         # Generic AI rules folder (custom)
+  # - docs/ai-guidelines.md                # Documentation folder (custom)
+
+# Additional configuration options
+autoSync: true                          # Enable automatic syncing on save (default: true)

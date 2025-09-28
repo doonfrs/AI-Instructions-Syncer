@@ -19,6 +19,11 @@
         "command": "aiRulesSyncer.generateRulesFile",
         "title": "Generate AI Rules File",
         "category": "AI Rules Syncer"
+      },
+      {
+        "command": "aiRulesSyncer.syncFiles",
+        "title": "Sync AI Rules Now",
+        "category": "AI Rules Syncer"
       }
     ]
   },
